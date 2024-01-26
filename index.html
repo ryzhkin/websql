@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSQL Legacy Support Library</title>
+
+    <script type="module" src="src/websql-persistent.js?force=true&debug=false"></script>
+<!--    <script src="src/websql-memory.js?force=true&debug=false"></script>-->
+
+
+    <link rel="stylesheet" href="jasmine-lib/jasmine.css">
+    <script src="jasmine-lib/jasmine.js"></script>
+    <script src="jasmine-lib/jasmine-html.js"></script>
+    <script src="jasmine-lib/boot0.js"></script>
+    <script src="jasmine-lib/boot1.js"></script>
+    <script src="tests/websql-tests.js"></script>
+</head>
+<body>
+   <h4>WebSQL Legacy Support Library</h4>
+   <script>
+       setTimeout(() => {
+           jasmine.getEnv().execute();
+       }, 500)
+   </script>
+</body>
+</html>
