@@ -35,3 +35,39 @@ WebSQL.
 - `debug=true/false`: Toggles the output of extended debugging information in the browser's console, aiding in a deeper
   understanding of the processes involved.
 
+## Automatic Registration and Full WebSQL API Support
+
+Once added to your page, the library automatically registers itself and supports the full WebSQL
+API https://www.w3.org/TR/webdatabase/ . This ensures that your legacy code will function as usual without any
+modifications.
+
+### Simple Examples of WebSQL Usage
+
+Below are a few straightforward examples to illustrate the use of WebSQL:
+
+1. **Creating a Database:**
+   ```javascript
+   var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
+
+2. **Creating a Table:**
+   ```javascript
+   db.transaction(function (tx) {
+       tx.executeSql('CREATE TABLE IF NOT EXISTS LOGS (id unique, log)');
+   });
+
+3. **Inserting Data:**
+   ```javascript
+   db.transaction(function (tx) {
+      tx.executeSql('INSERT INTO LOGS (id, log) VALUES (1, "Sample log")');
+   });
+
+4. **Querying Data:**
+   ```javascript
+   db.transaction(function (tx) {
+      tx.executeSql('SELECT * FROM LOGS', [], function (tx, results) {
+         var len = results.rows.length, i;
+         for (i = 0; i < len; i++) {
+           console.log(results.rows.item(i).log);
+         }
+      }, null);
+   });
