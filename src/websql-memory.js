@@ -17,6 +17,9 @@ window.websql = {
 }
 
 ;(async () => {
+    if (window.websql) {
+        return true;
+    }
     window.loadExternalScript = function (url) {
         return new Promise((resolve, reject) => {
             var script = document.createElement('script');
@@ -58,7 +61,7 @@ window.websql = {
                     }
                 })
             }
-            window.openDatabase = WebSqlDatabase.openDatabase;
+            window.openDatabase = window.websql.WebSqlDatabase.openDatabase;
             window.websql._isReady = true;
         } else {
             console.info('Found built-in WebSQL !!!')

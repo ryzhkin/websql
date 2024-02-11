@@ -214,6 +214,13 @@ class WebSqlDatabase {
         }
     }
 
+    static saveWebSqlDbConfiguration(config) {
+        let configs = localStorage.getItem('WebSQLdbConfigs');
+        configs = configs ? JSON.parse(configs) : {};
+        configs[config.name] = config;
+        localStorage.setItem('WebSQLdbConfigs', JSON.stringify(configs));
+    }
+
     static initializeDatabaseProvider(name, version) {
         if (websql.debug) {
            console.log('run original initializeDatabaseProvider');
@@ -315,6 +322,7 @@ class WebSqlDatabase {
     }
 
     static openDatabase(name, version, displayname, size, callback) {
+        WebSqlDatabase.saveWebSqlDbConfiguration({name, version, displayname, size})
         const db = new WebSqlDatabase(name, version);
         if (typeof(callback) === "function") {
             callback(db);

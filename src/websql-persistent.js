@@ -2,8 +2,10 @@ import * as websql from './websql.js';
 import SQLiteESMFactory from './db-providers/wa-sqlite/wa-sqlite-async.mjs';
 import * as WASQLiteAPI from './db-providers/wa-sqlite/wa-sqlite-api.js';
 
-
 (async () => {
+    if (window.websql) {
+      return true;
+    }
     const scriptParams = window.websql.getQueryParams(import.meta.url);
     if ('force' in scriptParams) {
         window.websql.forceWebSQLEmulate = scriptParams.force
