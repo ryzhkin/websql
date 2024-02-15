@@ -214,10 +214,18 @@ class WebSqlDatabase {
         }
     }
 
-    static saveWebSqlDbConfiguration(config) {
+    static getAllWebSqlDbConfigurations = () => {
         let configs = localStorage.getItem('WebSQLdbConfigs');
-        configs = configs ? JSON.parse(configs) : {};
-        configs[config.name] = config;
+        return configs ? JSON.parse(configs) : {};
+    }
+
+    static updateWebSqlDbConfiguration = (configName, updates) => {
+        let configs = WebSqlDatabase.getAllWebSqlDbConfigurations();
+        if (configs[configName]) {
+            configs[configName] = {...configs[configName], ...updates};
+        } else {
+            configs[configName] = updates
+        }
         localStorage.setItem('WebSQLdbConfigs', JSON.stringify(configs));
     }
 
@@ -322,7 +330,7 @@ class WebSqlDatabase {
     }
 
     static openDatabase(name, version, displayname, size, callback) {
-        WebSqlDatabase.saveWebSqlDbConfiguration({name, version, displayname, size})
+        WebSqlDatabase.updateWebSqlDbConfiguration(name, {name, version, displayname, size})
         const db = new WebSqlDatabase(name, version);
         if (typeof(callback) === "function") {
             callback(db);
