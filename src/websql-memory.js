@@ -17,9 +17,6 @@ window.websql = {
 }
 
 ;(async () => {
-    if (window.websql) {
-        return true;
-    }
     window.loadExternalScript = function (url) {
         return new Promise((resolve, reject) => {
             var script = document.createElement('script');
@@ -48,7 +45,7 @@ window.websql = {
                 return new Promise((resolve, reject) => {
                     if (WebSqlDatabase.db === null) {
                         if (window.websql.debug) {
-                            console.log('run SQLI-JS initializeDatabaseProvider');
+                            console.log('WebSql: run SQLI-JS initializeDatabaseProvider')
                         }
                         initSqlJs({
                             locateFile: file => `${relativePath}db-providers/sqli-js/${file}`

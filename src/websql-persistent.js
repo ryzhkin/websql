@@ -3,9 +3,6 @@ import SQLiteESMFactory from './db-providers/wa-sqlite/wa-sqlite-async.mjs';
 import * as WASQLiteAPI from './db-providers/wa-sqlite/wa-sqlite-api.js';
 
 (async () => {
-    if (window.websql) {
-      return true;
-    }
     const scriptParams = window.websql.getQueryParams(import.meta.url);
     if ('force' in scriptParams) {
         window.websql.forceWebSQLEmulate = scriptParams.force
@@ -19,9 +16,9 @@ import * as WASQLiteAPI from './db-providers/wa-sqlite/wa-sqlite-api.js';
         const sqlite3 = WASQLiteAPI.Factory(module);
         window.websql.WebSqlDatabase.initializeDatabaseProvider = (name, version) => {
             return new Promise(async (resolve, reject) => {
-                if (window.websql.WebSqlDatabase.db === null) {
+                if (window.websql.WebSqlDatabase.dbs[name] && !window.websql.WebSqlDatabase.dbs[name].db) {
                     if (window.websql.debug) {
-                        console.log('run wa-sqlite initializeDatabaseProvider')
+                        console.log('WebSql: run wa-sqlite initializeDatabaseProvider')
                     }
                     const vfs = new WASQLiteAPI.IDBBatchAtomicVFS(name);
                     await vfs.isReady;
@@ -56,9 +53,11 @@ import * as WASQLiteAPI from './db-providers/wa-sqlite/wa-sqlite-api.js';
                         },
 
                     }
-                    window.websql.WebSqlDatabase.db = dbStandarad;
+                    window.websql.WebSqlDatabase.dbs[name].db = dbStandarad;
+                    window.websql.WebSqlDatabase.db = window.websql.WebSqlDatabase.dbs[name].db;
                     resolve();
                 } else {
+                    window.websql.WebSqlDatabase.db = window.websql.WebSqlDatabase.dbs[name].db;
                     resolve();
                 }
             })
