@@ -44,13 +44,9 @@ if (isSecureContext()) {
                             console.log('WebSql: run wa-sqlite initializeDatabaseProvider')
                         }
                         const vfs = new WASQLiteAPI.IDBBatchAtomicVFS(name);
-                        // await wait(100);
                         await vfs.isReady;
-                        // await wait(500);
                         sqlite3.vfs_register(vfs, true);
-                        // await wait(300)
                         const db = await sqlite3.open_v2(name);
-                        // await wait(200);
                         const dbStandarad = {
                             exec: async (sql, args) => {
                                 const results = [];
@@ -64,7 +60,6 @@ if (isSecureContext()) {
                                     // Execute the statement with this loop.
                                     while (await sqlite3.step(stmt) === 100) {
                                         // Collect row data here.
-                                        // console.log(sqlite3.row(stmt))
                                         values.push(sqlite3.row(stmt))
                                     }
 
