@@ -162,7 +162,7 @@ class SQLTransaction {
             });
 
             if (websql.debug) {
-               console.log('result ---> ', result)
+               console.log('WebSql: result ---> ', result)
             }
 
             if (result !== null) {
@@ -172,8 +172,8 @@ class SQLTransaction {
             }
         } catch (e) {
             if (websql.debug) {
-                console.log('error from sql: ', sql)
-                console.log('catch error in executeSqlAsync: ', typeof (e), e)
+                console.log('WebSql: error from sql: ', sql)
+                console.log('WebSql: catch error in executeSqlAsync: ', typeof (e), e)
             }
             let error = new SQLError(SQLError.SYNTAX_ERR, e.toString());
             if (typeof (errorCallback) === "function") {
@@ -214,6 +214,15 @@ class WebSqlDatabase {
         }
     }
 
+    static initializeDatabaseProvider(name, version) {
+        if (websql.debug) {
+           console.log('WebSql: run original initializeDatabaseProvider');
+        }
+        return new Promise((resolve, reject) => {
+            resolve();
+        })
+    }
+
     static getAllWebSqlDbConfigurations = () => {
         let configs = localStorage.getItem('WebSQLdbConfigs');
         return configs ? JSON.parse(configs) : {};
@@ -229,15 +238,6 @@ class WebSqlDatabase {
         localStorage.setItem('WebSQLdbConfigs', JSON.stringify(configs));
     }
 
-    static initializeDatabaseProvider(name, version) {
-        if (websql.debug) {
-           console.log('run original initializeDatabaseProvider');
-        }
-        return new Promise((resolve, reject) => {
-            resolve();
-        })
-    }
-
     async execTransaction(callback, errorCallback, successCallback) {
         if (typeof(callback) !== "function") {
             throw new SQLError(SQLError.UNKNOWN_ERR)
@@ -248,7 +248,7 @@ class WebSqlDatabase {
         try {
             execQueue.enqueue(async () => {
                 if (websql.debug) {
-                   console.log('[execTransaction] - START')
+                   console.log('WebSql: [execTransaction] - START')
                 }
                 await tx.start();
             })
@@ -259,7 +259,7 @@ class WebSqlDatabase {
                 if (tx.error !== null) {
                     // throw tx.error
                     if (websql.debug) {
-                       console.log('catch error in transaction: ', typeof (tx.error), tx.error)
+                       console.log('WebSql: catch error in transaction: ', typeof (tx.error), tx.error)
                     }
 
                     // Roolback the current transaction
@@ -277,7 +277,7 @@ class WebSqlDatabase {
                   }
                 }
                 if (websql.debug) {
-                    console.log('[execTransaction] - END')
+                    console.log('WebSql: [execTransaction] - END')
                 }
             })
         } catch (e) {
@@ -330,6 +330,9 @@ class WebSqlDatabase {
     }
 
     static openDatabase(name, version, displayname, size, callback) {
+        if (websql.debug) {
+          console.log(`WebSql: Found the DB connection: ${name}, ${version}, ${size}`)
+        }
         WebSqlDatabase.updateWebSqlDbConfiguration(name, {name, version, displayname, size})
         const db = new WebSqlDatabase(name, version);
         if (typeof(callback) === "function") {
